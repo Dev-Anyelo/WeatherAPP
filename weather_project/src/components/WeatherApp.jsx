@@ -11,6 +11,7 @@ export default function WeatherApp() {
 
   const [city, setCity] = useState("");
   const [loading, setLoading] = useState(false);
+  const [buttonText, setButtonText] = useState("Search");
   const [error, setError] = useState({ error: false, message: "" });
   const [weather, setWeather] = useState({
     city: "",
@@ -32,19 +33,25 @@ export default function WeatherApp() {
       const response = await fetch(URL + city);
       const data = await response.json();
 
-      if (data.error) throw { message: data.error.message };
-
-      setWeather({
-        city: data.location.name,
-        country: data.location.country,
-        temp: data.current.temp_c,
-        condition: data.current.condition.code,
-        icon: data.current.condition.icon,
-        text: data.current.condition.text,
-        lat: data.location.lat,
-        lon: data.location.lon,
-        time: data.location.localtime,
-      });
+      if (data.error) {
+        throw { message: data.error.message };
+      } else {
+        setTimeout(() => {
+          setWeather({
+            city: data.location.name,
+            country: data.location.country,
+            temp: data.current.temp_c,
+            condition: data.current.condition.code,
+            icon: data.current.condition.icon,
+            text: data.current.condition.text,
+            lat: data.location.lat,
+            lon: data.location.lon,
+            time: data.location.localtime,
+          });
+          setLoading(false); // Cambia el estado loading a false después de cargar los datos
+          setButtonText("Search"); // Cambia el texto del botón de vuelta a "Search"
+        }, 1000);
+      }
     } catch (error) {
       setError({ error: true, message: error.message });
     }
@@ -52,7 +59,7 @@ export default function WeatherApp() {
 
   return (
     <>
-      <div className="w-full h-screen grid place-items-center bg-[#222] text-white">
+      <div className="w-full h-screen grid place-items-center bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-700 via-gray-900 to-black text-white">
         <div className="w-1/2 py-10 px-2 grid place-items-center gap-6">
           <h1 className="text-5xl text-center font-bold text-gray-200 mb-10">
             Weather App
@@ -90,13 +97,19 @@ export default function WeatherApp() {
                   onChange={(e) => setCity(e.target.value)}
                   value={city}
                   placeholder="Ingrese el país o ciudad..."
+                  autoComplete="true"
+                  autoFocus
                 />
                 <button
                   type="submit"
                   className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                  onClick={(e) => getWeather(e)}
+                  onClick={(e) => {
+                    getWeather(e);
+                    setLoading(true);
+                    setButtonText("Loading"); // Cambia el texto del botón a "Loading" cuando se hace clic
+                  }}
                 >
-                  {loading ? "Loading..." : "Search"}
+                  {buttonText}
                 </button>
               </div>
             </form>
@@ -126,8 +139,7 @@ export default function WeatherApp() {
                   </div>
 
                   <div className="mx-auto h-fit flex  gap-2 font-light ">
-                    <p>Lat: {weather.lat}</p> |
-                    <p>Long: {weather.lon}</p> |
+                    <p>Lat: {weather.lat}</p> |<p>Long: {weather.lon}</p> |
                     <h2>Temp: {weather.temp} °C</h2>
                   </div>
                 </div>
