@@ -3,7 +3,7 @@ import React, { useState } from "react";
 export default function WeatherApp() {
   const URL = `https://api.weatherapi.com/v1/current.json?key=${
     import.meta.env.VITE_API_KEY
-  }&lang=es&q=`;
+  }&lang=en&q=`;
 
   const [city, setCity] = useState("");
   const [loading, setLoading] = useState(false);
