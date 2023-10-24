@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 export default function WeatherApp() {
-  const URL = `http://api.weatherapi.com/v1/current.json?key=${
+  const URL = `https://api.weatherapi.com/v1/current.json?key=${
     import.meta.env.VITE_API_KEY
   }&lang=es&q=`;
 
