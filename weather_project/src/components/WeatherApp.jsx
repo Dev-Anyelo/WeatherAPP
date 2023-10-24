@@ -7,7 +7,6 @@ export default function WeatherApp() {
 
   const [city, setCity] = useState("");
   const [loading, setLoading] = useState(false);
-  const [buttonText, setButtonText] = useState("Search");
   const [error, setError] = useState({ error: false, message: "" });
   const [weather, setWeather] = useState({
     city: "",
@@ -24,6 +23,7 @@ export default function WeatherApp() {
   const getWeather = async (e) => {
     e.preventDefault();
     setError({ error: false, message: "" });
+    setLoading(false);
 
     try {
       const response = await fetch(URL + city);
@@ -32,6 +32,7 @@ export default function WeatherApp() {
       if (data.error) {
         throw { message: data.error.message };
       } else {
+        setLoading(true);
         setTimeout(() => {
           setWeather({
             city: data.location.name,
@@ -44,8 +45,7 @@ export default function WeatherApp() {
             lon: data.location.lon,
             time: data.location.localtime,
           });
-          setLoading(false); // Cambia el estado loading a false después de cargar los datos
-          setButtonText("Search"); // Cambia el texto del botón de vuelta a "Search"
+          setLoading(false);
         }, 1000);
       }
     } catch (error) {
@@ -57,7 +57,7 @@ export default function WeatherApp() {
     <>
       <div className="w-full h-screen grid place-items-center bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-700 via-gray-900 to-black text-white">
         <div className="w-1/2 py-10 px-2 grid place-items-center gap-6">
-          <h1 className="text-5xl text-center font-bold text-gray-200 mb-10">
+          <h1 className="text-6xl text-center font-bold bg-transparent bg-clip-text text-transparent bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-200 via-gray-400 to-gray-600">
             Weather App
           </h1>
           <div className="w-fit flex gap-4 mb-5">
@@ -92,7 +92,7 @@ export default function WeatherApp() {
                   className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   onChange={(e) => setCity(e.target.value)}
                   value={city}
-                  placeholder="Ingrese el país o ciudad..."
+                  placeholder="Enter a country or city"
                   autoComplete="true"
                   autoFocus
                 />
@@ -101,11 +101,9 @@ export default function WeatherApp() {
                   className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                   onClick={(e) => {
                     getWeather(e);
-                    setLoading(true);
-                    setButtonText("Loading"); // Cambia el texto del botón a "Loading" cuando se hace clic
                   }}
                 >
-                  {buttonText}
+                  {loading ? "Loading" : "Search"}
                 </button>
               </div>
             </form>
@@ -122,51 +120,40 @@ export default function WeatherApp() {
             )}
             {weather.city && (
               <div className="w-fit h-fit flex flex-col gap-10 py-5 px-16 border border-gray-700 rounded-xl bg-[#13222F] shadow-[0_0px_50px_rgba(8,_112,_184,_0.7)]">
-                <div className="flex gap-20 items-center">
-                  <div className="flex">
+                <div className="flex gap-16 items-center w-fit">
+                  <div className="flex items-center w-fit">
                     <img
                       src={weather.icon}
                       alt={weather.city}
-                      className="w-[96px] h-[96px]"
+                      className="w-[100px] h-[100px]"
                     />{" "}
-                    <div className="flex items-center ml-5">
+                    <div className="ml-5 h-fit w-fit">
                       <p className="font-light text-md">{weather.text}</p>
                     </div>
                   </div>
 
-                  <div className="mx-auto h-fit flex  gap-2 font-light ">
-                    <p>Lat: {weather.lat}</p> |<p>Long: {weather.lon}</p> |
+                  <div className="mx-auto h-fit flex gap-2 font-light">
+                    <p>Lat: {weather.lat}</p> | <p>Long: {weather.lon}</p> |
                     <h2>Temp: {weather.temp} °C</h2>
                   </div>
                 </div>
 
                 <div className="flex justify-between items-center">
-                  <h1 className="text-3xl font-light text-blue-500">
+                  <h1 className="text-2xl font-light text-blue-500">
                     {weather.country}
                   </h1>
 
-                  <h1 className="text-xl font-light text-blue-600">
+                  <h1 className="text-2xl font-light text-blue-600">
                     {weather.city}
                   </h1>
                 </div>
                 <div className="flex justify-end">
                   <h1 className="text-sm font-light text-gray-400">
-                    {weather.time}
+                    <p className="w-fit inline-block">Date: </p> {weather.time}
                   </h1>
                 </div>
               </div>
             )}
-          </div>
-
-          <div className="text-center font-light text-gray-300 mt-5">
-            <p>Powered by</p>
-            <a
-              href="https://www.weatherapi.com/"
-              title="Weather API"
-              className="hover:text-blue-500 underline"
-            >
-              WeatherAPI.com
-            </a>
           </div>
         </div>
       </div>
