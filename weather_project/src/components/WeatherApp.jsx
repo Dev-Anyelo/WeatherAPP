@@ -5,10 +5,6 @@ export default function WeatherApp() {
     import.meta.env.VITE_API_KEY
   }&lang=es&q=`;
 
-  // const URL_TO_CURRENT_CITY = `http://api.weatherapi.com/v1/current.json?key=${
-  //   import.meta.env.VITE_API_KEY
-  // }&lang=es&q=Panama`;
-
   const [city, setCity] = useState("");
   const [loading, setLoading] = useState(false);
   const [buttonText, setButtonText] = useState("Search");
