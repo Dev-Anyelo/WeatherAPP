@@ -139,10 +139,10 @@ export default function WeatherApp() {
           <div className="w-fit text-center">
             {error.error && (
               <div
-                className="p-3 text-red-600 rounded-lg border border-gray-700 bg-gray-900"
+                className="p-3 text-red-600 rounded-lg border border-gray-700 bg-gray-900 mb-3"
                 role="alert"
               >
-                <span className="font-medium text-lg">{error.message}</span>
+                <span className="font-medium text-sm sm:text-lg">{error.message}</span>
               </div>
             )}
             {weather.city && (
